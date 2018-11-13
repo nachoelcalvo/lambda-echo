@@ -1,11 +1,16 @@
 package org.personal;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class EchoLambdaGateway {
 
-    public Response handler(Request request){
-        return new Response(200, String.format("Hello, %s !!!" , request.pathParameters.get("name")));
+    private String lambdaId = UUID.randomUUID().toString();
+
+    public Response handler(Request request) throws InterruptedException {
+        Thread.sleep(3000);
+        return new Response(200, String.format("Hello, %s from %s !!!",
+                request.pathParameters.get("name"), lambdaId));
     }
 
     public static class Request {
