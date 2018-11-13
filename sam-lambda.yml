@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Echo lambda
+
+Resources:
+
+  EchoAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title:
+            Ref: AWS::StackName
+        schemes:
+        - "https"
+        paths:
+          /echo/{name}:
+            get:
+              x-amazon-apigateway-integration:
+                type: "aws_proxy"
+                httpMethod: "POST"
+                uri:
+                  Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}/invocations"
+
+  EchoLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.personal.EchoLambdaGateway::handler
+      Runtime: java8
+      MemorySize: 512
+      Timeout: 10
+      CodeUri: target/lambda-echo-1.0-SNAPSHOT.jar
+      Events:
+        ApiEvents:
+          Type: Api
+          Properties:
+            RestApiId: !Ref EchoAPI
+            Path: /echo/{name}
+            Method: GET

@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Echo lambda
+Resources:
+  EchoAPI:
+    Properties:
+      DefinitionBody:
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          /echo/{name}:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}/invocations
+        schemes:
+        - https
+        swagger: '2.0'
+      StageName: prod
+    Type: AWS::Serverless::Api
+  EchoLambda:
+    Properties:
+      CodeUri: s3://lambda-bucket-nachoelcalvo/8b9eae00cef27eff1d9640713bfdf12b
+      Events:
+        ApiEvents:
+          Properties:
+            Method: GET
+            Path: /echo/{name}
+            RestApiId:
+              Ref: EchoAPI
+          Type: Api
+      Handler: org.personal.EchoLambdaGateway::handler
+      MemorySize: 512
+      Runtime: java8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
