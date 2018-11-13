@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Echo lambda
+Resources:
+  EchoAPI:
+    Properties:
+      DefinitionBody:
+        definitions:
+          Empty:
+            title: Empty Schema
+            type: object
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          /echo:
+            get:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    statusCode: '200'
+                type: mock
+        schemes:
+        - https
+        swagger: '2.0'
+      StageName: prod
+    Type: AWS::Serverless::Api
+Transform: AWS::Serverless-2016-10-31
