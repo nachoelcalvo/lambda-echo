@@ -7,9 +7,11 @@ public class EchoLambdaGateway {
 
     private String lambdaId = UUID.randomUUID().toString();
 
-    public Response handler(Request request) throws InterruptedException {
-        Thread.sleep(3000);
-        return new Response(200, String.format("Hello, %s from %s !!!",
+    public Response handler(Request request) {
+
+        String greeting = System.getenv().getOrDefault("GREETING", "Hey");
+
+        return new Response(200, String.format("%s, %s from %s !!!", greeting,
                 request.pathParameters.get("name"), lambdaId));
     }
 

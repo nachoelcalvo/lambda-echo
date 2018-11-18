@@ -32,6 +32,9 @@ Resources:
       MemorySize: 512
       Timeout: 10
       CodeUri: target/lambda-echo-1.0-SNAPSHOT.jar
+      Environment:
+        Variables:
+          GREETING: Hola
       Events:
         ApiEvents:
           Type: Api
