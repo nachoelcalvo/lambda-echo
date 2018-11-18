@@ -31,7 +31,7 @@ Resources:
     Type: AWS::Serverless::Api
   EchoLambda:
     Properties:
-      CodeUri: s3://lambda-bucket-nachoelcalvo/95701c30c5e31d56b3b92c6552c89aba
+      CodeUri: s3://lambda-bucket-nachoelcalvo/89dc3798c600466c49063acf5a6f6af5
       Environment:
         Variables:
           GREETING: Hola
