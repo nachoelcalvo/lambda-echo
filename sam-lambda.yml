@@ -22,7 +22,7 @@ Resources:
                 type: "aws_proxy"
                 httpMethod: "POST"
                 uri:
-                  Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}/invocations"
+                  Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}:PROD/invocations"
 
   EchoLambda:
     Type: AWS::Serverless::Function
@@ -42,3 +42,13 @@ Resources:
             RestApiId: !Ref EchoAPI
             Path: /echo/{name}
             Method: GET
+
+  ApiLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::Sub: "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${EchoLambda}:PROD"
+      Action: "lambda:InvokeFunction"
+      Principal: "apigateway.amazonaws.com"
+      SourceArn:
+        Fn::Sub: "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${EchoAPI}/*/*/*"

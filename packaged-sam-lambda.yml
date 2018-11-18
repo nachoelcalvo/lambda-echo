@@ -1,6 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Echo lambda
 Resources:
+  ApiLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::Sub: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${EchoLambda}:PROD
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${EchoAPI}/*/*/*
+    Type: AWS::Lambda::Permission
   EchoAPI:
     Properties:
       DefinitionBody:
@@ -14,7 +23,7 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EchoLambda.Arn}:PROD/invocations
         schemes:
         - https
         swagger: '2.0'
